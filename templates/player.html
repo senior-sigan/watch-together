@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Hello</h1>
+
+<video id="player" playsinline controls data-poster="/uploads/{{video_name}}.jpg">
+    <source src="/video/{{ video_name }}.mp4" type="video/mp4" />
+</video>
+{% endblock %}
