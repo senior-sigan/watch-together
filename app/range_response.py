@@ -1,5 +1,5 @@
 import os
-from typing import BinaryIO
+from typing import BinaryIO, Tuple
 
 from fastapi import HTTPException, Request, status
 from fastapi.responses import StreamingResponse
@@ -19,7 +19,7 @@ def send_bytes_range_requests(
             yield f.read(read_size)
 
 
-def _get_range_header(range_header: str, file_size: int) -> tuple[int, int]:
+def _get_range_header(range_header: str, file_size: int) -> Tuple[int, int]:
     def _invalid_range():
         return HTTPException(
             status.HTTP_416_REQUESTED_RANGE_NOT_SATISFIABLE,
