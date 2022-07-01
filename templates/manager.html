@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>You are a Manager</h1>
+
+<div class="manager-player-wrapper">
+    <video id="player" playsinline controls data-poster="/uploads/{{video_name}}.jpg">
+        <source src="/video/{{ video_name }}.mp4" type="video/mp4" />
+        <track kind="subtitles" src="/uploads/{{ video_name }}.vtt"/>
+    </video>    
+</div>
+
+<script src="/static/manager.js"></script>
+{% endblock %}

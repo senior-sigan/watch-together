@@ -13,15 +13,24 @@
             width: 400px;
         }
     </style>
+    <script src="/static/helpers.js"></script>
 </head>
 
 <body>
+    <header>
+        <nav class="menu">
+            <ul>
+                <li><a href="/">Index</a></li>
+                <li><a href="/client">Client</a></li>
+                <li><a href="/videos">Videos</a></li>
+            </ul>
+        </nav>
+    </header>
     <main>
         {% block content %}{% endblock %}
     </main>
 
     <script src="/static/plyr.js"></script>
-    <script src="/static/app.js"></script>
 </body>
 
 </html>

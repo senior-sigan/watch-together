@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Select video</h1>
+
+<ul>
+    {% for video in videos %}
+        <div>
+            <a href="/manager/{{ video }}">
+            <p>{{video}}</p>
+            <img class="preview_image" src='/uploads/{{video}}.jpg' />
+            </a>
+        </div>
+    {% endfor %}
+</ul>
+
+{% endblock %}

@@ -1,7 +1,6 @@
 from http.client import HTTPResponse
 import logging
 from typing import Dict, List
-import uuid
 from fastapi import FastAPI, Request, Response, WebSocketDisconnect
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -41,45 +40,51 @@ class ConnectionManager:
                 await connection.send_json(message)
 
 
-managers = {}
+manager = ConnectionManager()
 
 
-@app.get('/', response_class=HTTPResponse)
-def index(request: Request) -> Response:
+@app.get('/videos', response_class=HTTPResponse)
+def videos(request: Request) -> Response:
     videos = sorted(Path('uploads').glob('*.mp4'))
     videos = [video.with_suffix('').name for video in videos]
-    return templates.TemplateResponse('index.html', {
+    return templates.TemplateResponse('videos.html', {
         'request': request,
         'videos': videos,
     })
 
 
-@app.get('/player/{video_name}', response_class=HTTPResponse)
-def index(video_name: str, request: Request) -> Response:
-    return templates.TemplateResponse('player.html', {
+@app.get('/', response_class=HTTPResponse)
+def index(request: Request) -> Response:
+    return templates.TemplateResponse('index.html', {
+        'request': request,
+    })
+
+
+@app.get('/client/', response_class=HTTPResponse)
+def client(request: Request) -> Response:
+    return templates.TemplateResponse('client.html', {
+        'request': request,
+    })
+
+
+@app.get('/manager/{video_name}', response_class=HTTPResponse)
+def player_manager(video_name: str, request: Request) -> Response:
+    return templates.TemplateResponse('manager.html', {
         'request': request,
         'video_name': video_name,
     })
 
 
-@app.websocket("/ws/{video_name}")
-async def websocket_endpoint(video_name: str, websocket: WebSocket):
-    if managers.get(video_name) is None:
-        managers[video_name] = ConnectionManager()
-    manager = managers[video_name]
-
-    socket_id = str(uuid.uuid4())
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
     try:
-        await manager.send_personal_message({'type': 'hello', 'id': socket_id}, websocket)
+        await manager.send_personal_message({'type': 'hello'}, websocket)
         while True:
             data = await websocket.receive_json()
-            data['from'] = socket_id
             await manager.broadcast(data, websocket)
     except WebSocketDisconnect:
         manager.disconnect(websocket)
-        if len(managers[video_name].active_connections) == 0:
-            del managers[video_name]
 
 
 @app.get("/video/{video_name}")
