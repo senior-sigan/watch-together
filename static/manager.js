@@ -1,8 +1,9 @@
 function runManager() {
   const player = new Plyr("#player");
   window.player = player;
-
   const videoName = window.location.pathname.split('/manager/')[1];
+  
+  player.on('ready', () => setupSubtitles(videoName));
 
   const ws = new WebSocket(`ws://${window.location.host}/ws`);
   ws.onmessage = function (event) {

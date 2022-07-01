@@ -22,11 +22,13 @@ function runClient() {
       setVideo(player, data.videoName);
       player.currentTime = data.currentTime;
       player.play();
+      setupSubtitles(data.videoName);
     }
     if (data["type"] == "playing") {
       setVideo(player, data.videoName);
       player.currentTime = data.currentTime;
       player.play();
+      setupSubtitles(data.videoName);
     }
   };
   ws.onopen = function (event) {};
@@ -38,8 +40,6 @@ function runClient() {
     const newSrc = `${window.location.origin}/video/${videoName}.mp4`;
     if (oldSrc == newSrc) return;
 
-    console.log("BUUUUUM");
-
     player.source = {
       type: 'video',
       title: videoName,
@@ -50,15 +50,6 @@ function runClient() {
         },
       ],
       poster: `/uploads/${videoName}.jpg`,
-      tracks: [
-        {
-          kind: 'captions',
-          label: 'Russian',
-          srclang: 'ru',
-          src: `/uploads/${videoName}.vtt`,
-          default: true,
-        },
-      ],
     };
   }
 }
