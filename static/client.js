@@ -20,9 +20,13 @@ function runClient() {
     }
     if (data["type"] == "progress" && data["playing"] === true) {
       setVideo(player, data.videoName);
-      player.currentTime = data.currentTime;
-      player.play();
-      setupSubtitles(data.videoName);
+      if (Math.abs(player.currentTime - data.currentTime) > 5) {
+        player.currentTime = data.currentTime;
+      }
+      if (!player.playing) {
+        player.play();
+        setupSubtitles(data.videoName);
+      }
     }
     if (data["type"] == "playing") {
       setVideo(player, data.videoName);
@@ -31,8 +35,8 @@ function runClient() {
       setupSubtitles(data.videoName);
     }
   };
-  ws.onopen = function (event) {};
-  ws.onclose = function (event) {};
+  ws.onopen = function (event) { };
+  ws.onclose = function (event) { };
 
   function setVideo(player, videoName) {
     if (!videoName) return;
